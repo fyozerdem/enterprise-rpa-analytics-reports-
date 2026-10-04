@@ -54,8 +54,7 @@ toplantıları için tasarlanmıştır.
 ### 3. İleri Düzey Queue Dashboard'u
 Robot performansını işlem hacmi, hız ve efor perspektifinden analiz eder.
 
-![Queue Dashboard](Reports/QueueDasboard1.PNG)
-![Queue Dashboard](Reports/QueueDashboard_2.PNG)
+![Queue Dashboard](Reports/QueueDashboard2)
 
 **Öne Çıkan Özellikler:**
 - Yönetici KPI kartları (Toplam İşlenen, Kritik Hata, Başarı Oranı, Retry Kurtarılan)
