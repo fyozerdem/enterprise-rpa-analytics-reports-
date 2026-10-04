@@ -34,8 +34,8 @@ Bu raporlama mimarisi sayesinde, RPA yönetim ekibi manuel log kontrollerinden k
 ---
 ### Raporlardan Detaylar
 
-![Log Analiz Raporu](gorseller/log_analizi_ekran_goruntusu.png)
-*Makine ve hata sınıfı bazlı operasyonel log kırılımı.*
+![Haftalık Queue Raporu](Reports/QueueDasboard1.PNG)
+*Queların Başarı oranı hesaplanması makinelerde haarcanan sürenin hesaplanması*
 
-![Sağlık Taraması](gorseller/health_check_ekran_goruntusu.png)
-*Orchestrator üzerindeki atıl (kullanılmayan) nesnelerin tespiti.*
+![Orchestrator Sağlık Taraması](Reports/OrchestratorKontrolRaporu.PNG)
+*Orchestrator üzerindeki atıl assetlerin ve queueların tespiti.*
