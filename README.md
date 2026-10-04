@@ -18,10 +18,10 @@ Bu repo, Kurumsal RPA (Robotik Süreç Otomasyonu) süreçleri için geliştiril
 ## 🔗 Canlı Rapor Önizlemeleri
 *(Eğer GitHub Pages kullanırsan buraya tıklanabilir linkleri koyabilirsin. Şimdilik dosyaların repo içindeki linklerini bırakıyoruz)*
 
-* 📊 [Queue Performans Raporu](RPA İleri Düzey Queue Dashboardu.html)
-* 📈 [Operasyonel Log Analizi](Operasyonel_Log_Analiz_Raporu_Mail.html)
-* ⚙️ [Orchestrator Kontrol Raporu](Orchestrator_Kontrol_Raporu_Mail.html)
-* ⏱️ [Süreç Tetikleyici Raporu](Surec_Tetikleyici_Raporu_Mail.html)
+* 📊 [Haftalık Queue Performans Dashboard](RPAHaftalıkQueueDashboard.html)
+* 📈 [Aylık Log Analizi Dashboard](RPA_AylıkLogAnaliz_Dashboard.html)
+* ⚙️ [Orchestrator Kontrol Raporu](RPA_OrchestratorKontrolRaporu_MailTaslağı.html)
+* ⏱️ [Süreç Tetikleyici Raporu](SüreçTetikleyiciRaporu_MailTaslağı.html)
 
 ## Kullanılan Teknolojiler
 * **Veri Çekme:** UiPath Orchestrator REST API
