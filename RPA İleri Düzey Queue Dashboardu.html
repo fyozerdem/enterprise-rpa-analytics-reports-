@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang='tr'>
+<head>
+    <meta charset='UTF-8'>
+    <title>RPA Yönetici Dashboard</title>
+    <script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .header-container { text-align: center; margin-bottom: 25px; padding-bottom: 10px; border-bottom: 2px solid #e1e5e8; }
+        .kpi-container { display: flex; justify-content: space-between; margin-bottom: 25px; gap: 20px; }
+        .kpi-card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); flex: 1; text-align: center; border-top: 4px solid #3498db; }
+        .kpi-card h3 { margin: 0 0 10px 0; font-size: 14px; color: #7f8c8d; text-transform: uppercase; }
+        .kpi-card .value { font-size: 30px; font-weight: bold; color: #2c3e50; }
+        .charts-row { display: flex; gap: 20px; margin-bottom: 30px; justify-content: space-between; }
+        .chart-box { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); flex: 1; height: 380px; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .dashboard-grid { display: flex; gap: 20px; min-height: 600px; }
+        .sidebar { width: 300px; background: #fff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: 800px; overflow-y: auto; }
+        .sidebar-header { position: sticky; top: 0; background: #fff; z-index: 10; padding-top: 15px; border-bottom: 1px solid #f1f2f6; margin-bottom: 10px; }
+        .search-box { padding: 0 20px 15px 20px; }
+        .search-box input { width: 100%; padding: 8px 12px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 13px; outline: none; box-sizing: border-box; transition: all 0.3s; }
+        .search-box input:focus { border-color: #3498db; box-shadow: 0 0 5px rgba(52,152,219,0.3); }
+        .menu-item { padding: 12px 20px; font-size: 14px; color: #34495e; cursor: pointer; border-bottom: 1px solid #f1f2f6; transition: all 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left: 4px solid transparent; }
+        .menu-item:hover { background-color: #f8f9fa; border-left-color: #bdc3c7; }
+        .menu-item.active { background-color: #eaf2f8; border-left-color: #3498db; font-weight: bold; color: #2980b9; }
+        .content-area { flex: 1; background: #fff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 25px; overflow-y: auto; height: 800px; }
+        table.data-table { border-collapse: collapse; width: 100%; margin-bottom: 30px; font-size: 13px; }
+        table.data-table th, table.data-table td { border: 1px solid #e1e5e8; text-align: center; padding: 10px 12px; }
+        table.data-table th { background-color: #2c3e50; color: #ffffff; font-weight: 600; }
+        table.data-table td:first-child, table.data-table th:first-child { text-align: left; }
+        table.data-table tr:nth-child(even) { background-color: #f9fbfc; }
+    </style>
+</head>
+<body>
+
+<div class='header-container'>
+    <h1 style='color: #2c3e50; margin-bottom: 5px; font-size: 26px;'>🚀 RPA İleri Düzey Queue Dashboard'u</h1>
+    <p style='color: #7f8c8d; font-size: 14px; margin-top: 0; font-style: italic;'>Rapor Tarihi: 14 Eylül 2026, Pazartesi</p>
+</div>
+
+<!-- ANA KPI'LAR -->
+<div class='kpi-container'>
+    <div class='kpi-card'><h3>Toplam İşlenen</h3><div class='value'>15,420</div></div>
+    <div class='kpi-card' style='border-top-color:#e74c3c;'><h3>Kritik Hata (App Ex)</h3><div class='value' style='color:#c0392b;'>120</div></div>
+    <div class='kpi-card' style='border-top-color:#2ecc71;'><h3>Genel Başarı Oranı</h3><div class='value' style='color:#27ae60;'>%97.80</div></div>
+    <div class='kpi-card' style='border-top-color:#f39c12;'><h3>♻️ Retry İle Kurtarılan</h3><div class='value' style='color:#d35400;'>345</div></div>
+</div>
+
+<!-- GENEL GRAFİKLER -->
+<div class='charts-row'>
+    <div class='chart-box' style='width:30%;'><canvas id='chartVol'></canvas></div>
+    <div class='chart-box' style='width:35%;'><canvas id='chartEfor'></canvas></div>
+    <div class='chart-box' style='width:35%;'><canvas id='chartHata'></canvas></div>
+</div>
+
+<div class='dashboard-grid'>
+    <!-- SOL MENÜ -->
+    <div class='sidebar'>
+        <div class='sidebar-header'>
+            <div style='padding: 0 20px 10px 20px; font-weight: bold; color: #7f8c8d; font-size: 12px; text-transform: uppercase;'>Süreç Listesi (A-Z)</div>
+            <div class='search-box'><input type='text' id='searchInput' onkeyup='filterQueues()' placeholder='🔍 Süreç ara...'></div>
+        </div>
+        <div id='menu_Surec_1' class='menu-item' onclick='showQueue("Surec_1")'>📝 Süreç 1</div>
+        <div id='menu_Surec_2' class='menu-item' onclick='showQueue("Surec_2")'>📝 Süreç 2</div>
+        <div id='menu_Surec_3' class='menu-item' onclick='showQueue("Surec_3")'>📝 Süreç 3</div>
+    </div>
+
+    <!-- İÇERİK ALANI -->
+    <div class='content-area'>
+        <div id='defaultMessage' style='text-align:center; padding: 150px 50px; color:#95a5a6; font-size:18px;'>
+            👈<br><br>Detaylı metrikleri ve trend grafiklerini görüntülemek için<br>soldaki listeden bir <b>Süreç</b> seçin.
+        </div>
+
+        <!-- ============================== SÜREÇ 1 DETAYLARI ============================== -->
+        <div id='details_Surec_1' class='queue-detail-view' style='display:none;'>
+            <h2 style='color:#2c3e50; border-bottom:3px solid #34495e; padding-bottom:10px; margin-top:0;'>🔍 Süreç 1</h2>
+            
+            <div style='display:flex; gap:20px; margin-bottom:25px;'>
+                <div style='flex:1; padding:15px; background:#f8f9fa; border-radius:8px; border: 1px solid #e1e5e8;'>
+                    <canvas id='trendChart_Surec_1' height='200'></canvas>
+                </div>
+                <div style='flex:1; padding:15px; background:#f8f9fa; border-radius:8px; border: 1px solid #e1e5e8;'>
+                    <canvas id='healthChart_Surec_1' height='200'></canvas>
+                </div>
+            </div>
+
+            <h3 style='color: #1a5276; border-bottom: 2px solid #5dade2; padding-bottom: 5px; font-size: 16px; margin-top: 10px; margin-bottom: 15px;'>📊 1. KUYRUK PERFORMANS ÖZETİ</h3>
+            <div style='font-size: 13px; color: #4a5a60; margin-top: -5px; margin-bottom: 14px; padding-left: 2px;'><i>* <b>Tamamlanan İşlem:</b> Başarılı + BizEx + AppEx + Abandoned<br>* <b>Başarı Oranı Formülü:</b> (Başarılı + BizEx) / Tamamlanan İşlemler</i></div>
+            <table class='data-table'>
+                <tr><th>Queue Name</th><th>Gelen Toplam</th><th>Tamamlanan</th><th>Başarılı</th><th>Biz Exception</th><th>App Exception</th><th>In Progress</th><th>Abandoned</th><th>Başarı Oranı</th><th>Önceki Haftaya Göre</th></tr>
+                <tr><td>Süreç 1</td><td>5000</td><td><b>4990</b></td><td><span style='color:#27ae60;'>4900</span></td><td><span style='color:#f39c12;'>70</span></td><td><span style='color:#c0392b; font-weight:bold;'>20</span></td><td>10</td><td>0</td><td><span style='color:#27ae60; font-weight:bold;'>%99.6</span></td><td><span style='color:#27ae60; font-weight:bold;'>&#11014; %0.5</span></td></tr>
+            </table>
+
+            <h3 style='color: #1a5276; border-bottom: 2px solid #5dade2; padding-bottom: 5px; font-size: 16px; margin-top: 10px; margin-bottom: 15px;'>⏱️ 2. HIZ VE PERFORMANS ÖZETİ</h3>
+            <div style='font-size: 13px; color: #4a5a60; margin-top: -5px; margin-bottom: 14px; padding-left: 2px;'><i>* <b>Not 1:</b> In Progress ve Abandoned statüsündeki kayıtlar sistemsel efor yaratmadığı için süre hesaplamalarına <u>dahil edilmemiştir</u>.</i></div>
+            <table class='data-table'>
+                <tr><th>Queue Name</th><th>Başarılı / Tamamlanan</th><th>Bu Hafta Ort. Hız<br><span style='font-size:11px; font-weight:normal;'>(Sadece Başarılı)</span></th><th>Üretken Toplam Süre<br><span style='font-size:11px; font-weight:normal;'>(Başarılı+BizEx)</span></th><th>Kayıp Toplam Süre<br><span style='font-size:11px; font-weight:normal;'>(AppEx+Retry)</span></th><th>Önceki Haftaya Göre Değişim<br><span style='font-size:11px; font-weight:normal;'>(Ort. Hız - Sadece Başarılı)</span></th></tr>
+                <tr><td>Süreç 1</td><td><b>4970</b> / 4990</td><td><b>12.5 sn</b></td><td>17.2 Saat</td><td><span style='font-weight:bold; color:#c0392b;'>30 Dk</span><br><span style='font-size:11px; color:#7f8c8d;'>(AppEx: 20 Dk | Retry: 10 Dk)</span></td><td><span style='color:#7f8c8d;'>Stabil (-)</span></td></tr>
+            </table>
+
+            <h3 style='color: #1a5276; border-bottom: 2px solid #5dade2; padding-bottom: 5px; font-size: 16px; margin-top: 10px; margin-bottom: 15px;'>🔄 3. RETRY ANALİZİ</h3>
+            <table class='data-table'>
+                <tr><th>Queue Name</th><th>Bu Hafta Kurtarılan / Toplam</th><th>Bu Hafta Ara Deneme Kaybı<br><span style='font-size:11px; font-weight:normal;'>(Sadece Retried İşlemler)</span></th><th>Önceki Hafta Kurtarılan / Toplam</th><th>Önceki Hafta Ara Deneme Kaybı</th></tr>
+                <tr><td>Süreç 1</td><td>45 / 50 (<span style='color:#27ae60; font-weight:bold;'>%90.0</span>)</td><td style='color:#c0392b;'><b>10 Dk</b></td><td>38 / 45 (<span style='color:#27ae60; font-weight:bold;'>%84.4</span>)</td><td>8 Dk</td></tr>
+            </table>
+        </div>
+
+        <!-- ============================== SÜREÇ 2 DETAYLARI ============================== -->
+        <div id='details_Surec_2' class='queue-detail-view' style='display:none;'>
+            <h2 style='color:#2c3e50; border-bottom:3px solid #34495e; padding-bottom:10px; margin-top:0;'>🔍 Süreç 2</h2>
+            
+            <div style='display:flex; gap:20px; margin-bottom:25px;'>
+                <div style='flex:1; padding:15px; background:#f8f9fa; border-radius:8px; border: 1px solid #e1e5e8;'><canvas id='trendChart_Surec_2' height='200'></canvas></div>
+                <div style='flex:1; padding:15px; background:#f8f9fa; border-radius:8px; border: 1px solid #e1e5e8;'><canvas id='healthChart_Surec_2' height='200'></canvas></div>
+            </div>
+
+            <h3 style='color: #1a5276; border-bottom: 2px solid #5dade2; padding-bottom: 5px; font-size: 16px; margin-top: 10px; margin-bottom: 15px;'>📊 1. KUYRUK PERFORMANS ÖZETİ</h3>
+            <table class='data-table'>
+                <tr><th>Queue Name</th><th>Gelen Toplam</th><th>Tamamlanan</th><th>Başarılı</th><th>Biz Exception</th><th>App Exception</th><th>In Progress</th><th>Abandoned</th><th>Başarı Oranı</th><th>Önceki Haftaya Göre</th></tr>
+                <tr><td>Süreç 2</td><td>8000</td><td><b>8000</b></td><td><span style='color:#27ae60;'>7500</span></td><td><span style='color:#f39c12;'>420</span></td><td><span style='color:#c0392b; font-weight:bold;'>80</span></td><td>0</td><td>0</td><td><span style='color:#27ae60; font-weight:bold;'>%99.0</span></td><td><span style='color:#7f8c8d; font-weight:bold;'>Stabil (-)</span></td></tr>
+            </table>
+
+            <h3 style='color: #1a5276; border-bottom: 2px solid #5dade2; padding-bottom: 5px; font-size: 16px; margin-top: 10px; margin-bottom: 15px;'>⏱️ 2. HIZ VE PERFORMANS ÖZETİ</h3>
+            <table class='data-table'>
+                <tr><th>Queue Name</th><th>Başarılı / Tamamlanan</th><th>Bu Hafta Ort. Hız</th><th>Üretken Toplam Süre</th><th>Kayıp Toplam Süre</th><th>Önceki Haftaya Göre Değişim</th></tr>
+                <tr style='background-color: #fcf0ef;'><td>Süreç 2</td><td><b>7920</b> / 8000</td><td><b>5.4 sn</b></td><td>11.8 Saat</td><td><span style='font-weight:bold; color:#c0392b;'>4.2 Saat</span><br><span style='font-size:11px; color:#7f8c8d;'>(AppEx: 2.1 Saat | Retry: 2.1 Saat)</span></td><td><span style='color:#c0392b; font-weight:bold;'>⬇ 2.1 sn (Yavaşladı)</span></td></tr>
+            </table>
+
+            <h3 style='color: #1a5276; border-bottom: 2px solid #5dade2; padding-bottom: 5px; font-size: 16px; margin-top: 10px; margin-bottom: 15px;'>🔄 3. RETRY ANALİZİ</h3>
+            <table class='data-table'>
+                <tr><th>Queue Name</th><th>Bu Hafta Kurtarılan / Toplam</th><th>Bu Hafta Ara Deneme Kaybı</th><th>Önceki Hafta Kurtarılan / Toplam</th><th>Önceki Hafta Ara Deneme Kaybı</th></tr>
+                <tr><td>Süreç 2</td><td>300 / 380 (<span style='color:#27ae60; font-weight:bold;'>%78.9</span>)</td><td style='color:#c0392b;'><b>2.1 Saat</b></td><td>280 / 350 (<span style='color:#27ae60; font-weight:bold;'>%80.0</span>)</td><td>1.8 Saat</td></tr>
+            </table>
+        </div>
+
+        <!-- ============================== SÜREÇ 3 DETAYLARI ============================== -->
+        <div id='details_Surec_3' class='queue-detail-view' style='display:none;'>
+            <h2 style='color:#2c3e50; border-bottom:3px solid #34495e; padding-bottom:10px; margin-top:0;'>🔍 Süreç 3</h2>
+            <div style='display:flex; gap:20px; margin-bottom:25px;'>
+                <div style='flex:1; padding:15px; background:#f8f9fa; border-radius:8px; border: 1px solid #e1e5e8;'><canvas id='trendChart_Surec_3' height='200'></canvas></div>
+                <div style='flex:1; padding:15px; background:#f8f9fa; border-radius:8px; border: 1px solid #e1e5e8;'><canvas id='healthChart_Surec_3' height='200'></canvas></div>
+            </div>
+
+            <h3 style='color: #1a5276; border-bottom: 2px solid #5dade2; padding-bottom: 5px; font-size: 16px; margin-top: 10px; margin-bottom: 15px;'>📊 1. KUYRUK PERFORMANS ÖZETİ</h3>
+            <table class='data-table'>
+                <tr><th>Queue Name</th><th>Gelen Toplam</th><th>Tamamlanan</th><th>Başarılı</th><th>Biz Exception</th><th>App Exception</th><th>In Progress</th><th>Abandoned</th><th>Başarı Oranı</th><th>Önceki Haftaya Göre</th></tr>
+                <tr><td>Süreç 3</td><td>2420</td><td><b>2420</b></td><td><span style='color:#27ae60;'>2380</span></td><td><span style='color:#f39c12;'>20</span></td><td><span style='color:#c0392b; font-weight:bold;'>20</span></td><td>0</td><td>0</td><td><span style='color:#27ae60; font-weight:bold;'>%99.1</span></td><td><span style='color:#c0392b; font-weight:bold;'>&#11015; %1.2</span></td></tr>
+            </table>
+
+            <h3 style='color: #1a5276; border-bottom: 2px solid #5dade2; padding-bottom: 5px; font-size: 16px; margin-top: 10px; margin-bottom: 15px;'>⏱️ 2. HIZ VE PERFORMANS ÖZETİ</h3>
+            <table class='data-table'>
+                <tr><th>Queue Name</th><th>Başarılı / Tamamlanan</th><th>Bu Hafta Ort. Hız</th><th>Üretken Toplam Süre</th><th>Kayıp Toplam Süre</th><th>Önceki Haftaya Göre Değişim</th></tr>
+                <tr><td>Süreç 3</td><td><b>2400</b> / 2420</td><td><b>45.0 sn</b></td><td>30 Saat</td><td><span style='font-weight:bold; color:#c0392b;'>1 Saat</span><br><span style='font-size:11px; color:#7f8c8d;'>(AppEx: 45 Dk | Retry: 15 Dk)</span></td><td><span style='color:#27ae60; font-weight:bold;'>⬆ 12.0 sn (Hızlandı)</span></td></tr>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<script>
+// Arama ve Menü Yönetimi
+function showQueue(qID) {
+    document.getElementById('defaultMessage').style.display = 'none';
+    var views = document.querySelectorAll('.queue-detail-view');
+    for(var i=0; i<views.length; i++) { views[i].style.display = 'none'; }
+    var menus = document.querySelectorAll('.menu-item');
+    for(var j=0; j<menus.length; j++) { menus[j].classList.remove('active'); }
+    document.getElementById('details_' + qID).style.display = 'block';
+    document.getElementById('menu_' + qID).classList.add('active');
+}
+
+function filterQueues() {
+    var input = document.getElementById('searchInput');
+    var filter = input.value.toLowerCase();
+    var nodes = document.querySelectorAll('.menu-item');
+    for (var i = 0; i < nodes.length; i++) {
+        if (nodes[i].innerText.toLowerCase().includes(filter)) {
+            nodes[i].style.display = 'block';
+        } else {
+            nodes[i].style.display = 'none';
+        }
+    }
+}
+
+// Chart.js Ayarları
+Chart.defaults.font.family = 'Segoe UI';
+Chart.defaults.color = '#7f8c8d';
+
+// Ana Grafikler
+new Chart(document.getElementById('chartVol'), { 
+    type: 'doughnut', 
+    data: { 
+        labels: ['Süreç 2 [8000 Adet]', 'Süreç 1 [5000 Adet]', 'Süreç 3 [2420 Adet]'], 
+        datasets: [{ data: [8000, 5000, 2420], backgroundColor: ['#2980b9', '#1abc9c', '#f39c12'] }] 
+    }, 
+    options: { cutout: '65%', layout: { padding: 20 }, responsive: true, maintainAspectRatio: false, plugins: { 
+        title: { display: true, text: 'İşlem Hacmi (Top 3)', font: {size: 15, weight: 'bold'}, color: '#2c3e50' }, 
+        legend: { display: true, position: 'right', labels: { boxWidth: 10, font: {size: 11} } }, 
+        tooltip: { callbacks: { label: function(context){ return ' İşlenen Adet: ' + context.raw; } } } 
+    } } 
+});
+
+new Chart(document.getElementById('chartEfor'), { 
+    type: 'bar', 
+    data: { 
+        labels: ['Süreç 3', 'Süreç 1', 'Süreç 2'], 
+        datasets: [ 
+            { label: 'Üretken Efor (Saat)', data: [30.0, 17.2, 11.8], backgroundColor: '#27ae60' }, 
+            { label: 'Kayıp Efor (Saat)', data: [1.0, 0.5, 4.2], backgroundColor: '#e74c3c' } 
+        ]
+    }, 
+    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', axis: 'y', intersect: false }, 
+        scales: { x: { stacked: true }, y: { stacked: true } }, 
+        plugins: { 
+            title: { display: true, text: 'Üretken vs Kayıp Efor (Top 3)', font: {size: 15, weight: 'bold'}, color: '#2c3e50' }, 
+            legend: { display: true, position: 'bottom' }, 
+            tooltip: { callbacks: { label: function(context){ return ' ' + context.dataset.label + ': ' + context.raw + ' Saat'; } } } 
+        } 
+    } 
+});
+
+new Chart(document.getElementById('chartHata'), { 
+    type: 'bar', 
+    data: { 
+        labels: ['Süreç 2', 'Süreç 1', 'Süreç 3'], 
+        datasets: [ 
+            { label: 'Sistem Hatası (App)', data: [80, 20, 20], backgroundColor: '#c0392b' } 
+        ]
+    }, 
+    options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', axis: 'x', intersect: false }, 
+        scales: { x: { stacked: true }, y: { stacked: true } }, 
+        plugins: { 
+            title: { display: true, text: 'En Çok AppException Alanlar', font: {size: 15, weight: 'bold'}, color: '#2c3e50' }, 
+            legend: { display: true, position: 'bottom' }, 
+            tooltip: { callbacks: { label: function(context){ return ' ' + context.dataset.label + ': ' + context.raw + ' Adet'; } } } 
+        } 
+    } 
+});
+
+
+// Tooltipler İçin Ham Veriler (Süreç 1)
+var islenenBuHafta_Surec_1 = [1000, 1200, 800, 1050, 950];
+var islenenGecenHafta_Surec_1 = [950, 1100, 900, 1000, 950];
+
+new Chart(document.getElementById('trendChart_Surec_1'), {
+  type: 'line',
+  data: {
+    labels: ['Pzt (07.09)', 'Sal (08.09)', 'Çar (09.09)', 'Per (10.09)', 'Cum (11.09)'],
+    datasets: [
+      { label: 'Bu Hafta Toplam', data: islenenBuHafta_Surec_1, borderColor: '#3498db', backgroundColor: 'rgba(52, 152, 219, 0.1)', fill: true, tension: 0.3, borderWidth: 3, pointRadius: 5 },
+      { label: 'Geçen Hafta Toplam', data: islenenGecenHafta_Surec_1, borderColor: '#bdc3c7', borderDash: [5, 5], backgroundColor: 'transparent', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 5 }
+    ]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Hacim Trendi' } } }
+});
+
+new Chart(document.getElementById('healthChart_Surec_1'), {
+  type: 'bar',
+  data: {
+    labels: ['Pzt (07.09)', 'Sal (08.09)', 'Çar (09.09)', 'Per (10.09)', 'Cum (11.09)'],
+    datasets: [
+      { label: 'Geçen Hafta App Hatası', data: [3, 5, 2, 4, 3], backgroundColor: '#95a5a6' },
+      { label: 'Bu Hafta App Hatası', data: [4, 6, 1, 5, 4], backgroundColor: '#c0392b' }
+    ]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Günlük Hata Kıyaslaması' } } }
+});
+
+// Tooltipler İçin Ham Veriler (Süreç 2)
+var islenenBuHafta_Surec_2 = [1500, 1800, 1400, 1700, 1600];
+var islenenGecenHafta_Surec_2 = [1400, 1500, 1450, 1600, 1500];
+
+new Chart(document.getElementById('trendChart_Surec_2'), {
+  type: 'line',
+  data: {
+    labels: ['Pzt (07.09)', 'Sal (08.09)', 'Çar (09.09)', 'Per (10.09)', 'Cum (11.09)'],
+    datasets: [
+      { label: 'Bu Hafta Toplam', data: islenenBuHafta_Surec_2, borderColor: '#3498db', backgroundColor: 'rgba(52, 152, 219, 0.1)', fill: true, tension: 0.3, borderWidth: 3, pointRadius: 5 },
+      { label: 'Geçen Hafta Toplam', data: islenenGecenHafta_Surec_2, borderColor: '#bdc3c7', borderDash: [5, 5], fill: false, tension: 0.3, borderWidth: 2, pointRadius: 5 }
+    ]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Hacim Trendi' } } }
+});
+
+new Chart(document.getElementById('healthChart_Surec_2'), {
+  type: 'bar',
+  data: {
+    labels: ['Pzt (07.09)', 'Sal (08.09)', 'Çar (09.09)', 'Per (10.09)', 'Cum (11.09)'],
+    datasets: [
+      { label: 'Geçen Hafta App Hatası', data: [15, 20, 10, 12, 18], backgroundColor: '#95a5a6' },
+      { label: 'Bu Hafta App Hatası', data: [10, 30, 15, 10, 15], backgroundColor: '#c0392b' }
+    ]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Günlük Hata Kıyaslaması' } } }
+});
+
+// Tooltipler İçin Ham Veriler (Süreç 3)
+var islenenBuHafta_Surec_3 = [500, 520, 480, 500, 420];
+var islenenGecenHafta_Surec_3 = [480, 510, 490, 490, 410];
+
+new Chart(document.getElementById('trendChart_Surec_3'), {
+  type: 'line',
+  data: {
+    labels: ['Pzt (07.09)', 'Sal (08.09)', 'Çar (09.09)', 'Per (10.09)', 'Cum (11.09)'],
+    datasets: [
+      { label: 'Bu Hafta Toplam', data: islenenBuHafta_Surec_3, borderColor: '#3498db', backgroundColor: 'rgba(52, 152, 219, 0.1)', fill: true, tension: 0.3, borderWidth: 3, pointRadius: 5 },
+      { label: 'Geçen Hafta Toplam', data: islenenGecenHafta_Surec_3, borderColor: '#bdc3c7', borderDash: [5, 5], fill: false, tension: 0.3, borderWidth: 2, pointRadius: 5 }
+    ]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Hacim Trendi' } } }
+});
+
+new Chart(document.getElementById('healthChart_Surec_3'), {
+  type: 'bar',
+  data: {
+    labels: ['Pzt (07.09)', 'Sal (08.09)', 'Çar (09.09)', 'Per (10.09)', 'Cum (11.09)'],
+    datasets: [
+      { label: 'Geçen Hafta App Hatası', data: [5, 2, 4, 1, 3], backgroundColor: '#95a5a6' },
+      { label: 'Bu Hafta App Hatası', data: [2, 4, 3, 5, 6], backgroundColor: '#c0392b' }
+    ]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Günlük Hata Kıyaslaması' } } }
+});
+
+</script>
+</body>
+</html>

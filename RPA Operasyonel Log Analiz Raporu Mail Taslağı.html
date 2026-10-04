@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<body style='background-color: #ffffff; padding: 20px;'>
+ <div style='max-width: 900px; margin: auto; border: 1px solid #eeeeee; padding: 20px; border-radius: 8px;'>
+  
+  <div style='text-align: center; padding-bottom: 20px; border-bottom: 2px solid #1F4E78;'>
+    <h1 style='color: #1F4E78; font-family: Calibri, sans-serif; margin: 0;'>RPA Operasyonel Log Analiz Raporu</h1>
+    <p style='color: #666; font-style: italic;'>Rapor Tarih Aralığı: 08.09.2026 - 14.09.2026</p>
+  </div>
+  <br>
+
+  <!-- I. MAKİNE BAZLI ÖZET -->
+  <div style='margin-bottom: 25px; width: 100%;'>
+   <div style='border-left: 6px solid #1F4E78; padding-left: 10px; margin-bottom: 15px;'>
+     <h2 style='color: #1F4E78; font-family: Calibri, sans-serif; margin: 0; padding: 0;'>I. Makine Bazlı Operasyonel Özet</h2>
+     <p style='color: #595959; font-family: Calibri, sans-serif; font-size: 10px; font-style: italic; margin: 2px 0 0 0;'>* Okunabilirlik adına makine isimlerinde 'SVPRDUI' sonrası baz alınmıştır.</p>
+   </div>
+   <table border='0' style='border-collapse: collapse; width: 100%; table-layout: fixed; font-family: Calibri, Arial, sans-serif; font-size: 11px;'>
+     <colgroup>
+       <col style='width: 8%;'><col style='width: 8%;'><col style='width: 8%;'><col style='width: 22%;'><col style='width: 22%;'><col style='width: 16%;'><col style='width: 16%;'>
+     </colgroup>
+     <thead>
+       <tr style='background-color: #1F4E78; color: #FFFFFF; text-align: left;'>
+         <th style='padding: 10px; border: 1px solid #dee2e6; text-align: center;'>Makine Adı</th>
+         <th style='padding: 10px; border: 1px solid #dee2e6;text-align: center; '>Toplam Fatal</th>
+         <th style='padding: 10px; border: 1px solid #dee2e6;text-align: center; '>Toplam Error</th>
+         <th style='padding: 10px; border: 1px solid #dee2e6;'>En Çok Alınan Hata (Fatal)</th>
+         <th style='padding: 10px; border: 1px solid #dee2e6;'>En Çok Alınan Hata (Error)</th>
+         <th style='padding: 10px; border: 1px solid #dee2e6; text-align: center;'>En çok Hata Süreç (Fatal)</th>
+         <th style='padding: 10px; border: 1px solid #dee2e6; text-align: center;'>En çok Hata Süreç (Error)</th>
+       </tr>
+     </thead>
+     <tbody>
+       <tr>
+         <td style='padding: 8px; border: 1px solid #dee2e6; background-color: #f8f9fa; font-weight: bold; text-align: center;'>BOT-01</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; text-align: center; color: #C00000; font-weight: bold;'>3</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; text-align: center; color: #E67E22; font-weight: bold;'>12</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; font-style: italic;'>System.TimeoutException</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; font-style: italic;'>BusinessRuleException</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; font-style: italic; text-align: center;'>Süreç_1</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; font-style: italic; text-align: center;'>Süreç_4</td>
+       </tr>
+       <tr>
+         <td style='padding: 8px; border: 1px solid #dee2e6; background-color: #f8f9fa; font-weight: bold; text-align: center;'>BOT-02</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; text-align: center; color: #C00000; font-weight: bold;'>1</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; text-align: center; color: #E67E22; font-weight: bold;'>24</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; font-style: italic;'>SelectorNotFoundException</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; font-style: italic;'>BusinessRuleException</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; font-style: italic; text-align: center;'>Süreç_2</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; font-style: italic; text-align: center;'>Süreç_2</td>
+       </tr>
+     </tbody>
+   </table>
+  </div>
+
+  <!-- II. SÜREÇ BAZLI ÖZET -->
+  <div style='margin-top: 35px; margin-bottom: 25px;'>
+   <div style='border-left: 6px solid #C00000; padding-left: 10px; display: inline-block; margin-bottom: 25px;'>
+     <h2 style='color: #C00000; font-family: Calibri, sans-serif; margin: 0;'>II. Süreç Bazlı Operasyonel Özet</h2>
+   </div>
+   <table border='0' style='border-collapse: collapse; width: 100%; font-family: Calibri, Arial, sans-serif; font-size: 12px; table-layout: fixed;'>
+     <colgroup>
+       <col style='width: 34%;'><col style='width: 9%;'><col style='width: 13%;'><col style='width: 34%;'><col style='width: 10%;'>
+     </colgroup>
+     <thead>
+       <!-- FATAL SÜREÇLER -->
+       <tr style='background-color: #C00000; color: white;'>
+         <th colspan='5' style='padding: 10px; text-align: left;'>A. FATAL Kayıt Üreten Süreçler</th>
+       </tr>
+       <tr style='background-color: #f2f2f2; color: #000000; text-align: left; font-weight: bold;'>
+         <th style='padding: 8px; border: 1px solid #ddd;'>Süreç Adı</th>
+         <th style='padding: 8px; border: 1px solid #ddd; text-align: center ;'>Toplam Fatal</th>
+         <th style='padding: 8px; border: 1px solid #ddd;'>En Çok Hata Alınan Makine</th>
+         <th style='padding: 8px; border: 1px solid #ddd;'>En Çok Tekrarlanan Hata Sınıfı</th>
+         <th style='padding: 8px; border: 1px solid #ddd;'>Sık FingerPrint</th>
+       </tr>
+     </thead>
+     <tbody>
+       <tr>
+         <td style='padding: 8px; border: 1px solid #ddd; background-color: #f8f9fa; font-weight: bold;'>Süreç_1</td>
+         <td style='padding: 8px; border: 1px solid #ddd; text-align: center; color: #C00000; font-weight: bold;'>3</td>
+         <td style='padding: 8px; border: 1px solid #ddd; font-style: italic;'>Makine_1</td>
+         <td style='padding: 8px; border: 1px solid #ddd; font-style: italic;'>System.TimeoutException</td>
+         <td style='padding: 8px; border: 1px solid #ddd; font-size: 10px; color: #555;'>A1B2C3D4</td>
+       </tr>
+       
+       <tr style='height: 20px;'><td colspan='5' style='border: none;'></td></tr>
+       
+       <!-- FAULTED SÜREÇLER -->
+       <tr style='background-color: #D35400; color: white;'>
+         <th colspan='5' style='padding: 10px; text-align: left;'>B. FAULTED Kayıt Üreten Süreçler</th>
+       </tr>
+       <tr style='background-color: #f2f2f2; color: #000000; text-align: left; font-weight: bold;'>
+         <th style='padding: 8px; border: 1px solid #ddd;'>Süreç Adı</th>
+         <th style='padding: 8px; border: 1px solid #ddd; text-align: center;'>Toplam Faulted</th>
+         <th style='padding: 8px; border: 1px solid #ddd;'>En Çok Hata Alınan Makine</th>
+         <th style='padding: 8px; border: 1px solid #ddd;'>En Çok Tekrarlanan Hata Sınıfı</th>
+         <th style='padding: 8px; border: 1px solid #ddd;'>Sık FingerPrint</th>
+       </tr>
+       <tr>
+         <td style='padding: 8px; border: 1px solid #ddd; background-color: #f8f9fa; font-weight: bold;'>Süreç_3</td>
+         <td style='padding: 8px; border: 1px solid #ddd; text-align: center; color: #D35400; font-weight: bold;'>8</td>
+         <td style='padding: 8px; border: 1px solid #ddd; font-style: italic;'>Makine_2</td>
+         <td style='padding: 8px; border: 1px solid #ddd; font-style: italic;'>UiPath.Core.SelectorNotFoundException</td>
+         <td style='padding: 8px; border: 1px solid #ddd; font-size: 10px; color: #555;'>F5G6H7I8</td>
+       </tr>
+
+       <tr style='height: 20px;'><td colspan='5' style='border: none;'></td></tr>
+
+       <!-- ERROR SÜREÇLER -->
+       <tr style='background-color: #E67E22; color: white;'>
+         <th colspan='5' style='padding: 10px; text-align: left;'>C. ERROR Kayıt Üreten Süreçler (Toplam Log >= 10)</th>
+       </tr>
+       <tr style='background-color: #f2f2f2; color: #000000; text-align: left; font-weight: bold;'>
+         <th style='padding: 8px; border: 1px solid #ddd;'>Süreç Adı</th>
+         <th style='padding: 8px; border: 1px solid #ddd; text-align: center;'>Toplam Error</th>
+         <th style='padding: 8px; border: 1px solid #ddd;'>En Çok Hata Alınan Makine</th>
+         <th style='padding: 8px; border: 1px solid #ddd;'>En Çok Tekrarlanan Hata Sınıfı</th>
+         <th style='padding: 8px; border: 1px solid #ddd;'>Sık FingerPrint</th>
+       </tr>
+       <tr>
+         <td style='padding: 8px; border: 1px solid #ddd; background-color: #f8f9fa; font-weight: bold;'>Süreç_2</td>
+         <td style='padding: 8px; border: 1px solid #ddd; text-align: center; color: #E67E22; font-weight: bold;'>24</td>
+         <td style='padding: 8px; border: 1px solid #ddd; font-style: italic;'>Makine_2</td>
+         <td style='padding: 8px; border: 1px solid #ddd; font-style: italic;'>BusinessRuleException</td>
+         <td style='padding: 8px; border: 1px solid #ddd; font-size: 10px; color: #555;'>X1Y2Z3W4</td>
+       </tr>
+       <tr>
+         <td style='padding: 8px; border: 1px solid #ddd; background-color: #f8f9fa; font-weight: bold;'>Süreç_4</td>
+         <td style='padding: 8px; border: 1px solid #ddd; text-align: center; color: #E67E22; font-weight: bold;'>12</td>
+         <td style='padding: 8px; border: 1px solid #ddd; font-style: italic;'>Makine_1</td>
+         <td style='padding: 8px; border: 1px solid #ddd; font-style: italic;'>System.NullReferenceException</td>
+         <td style='padding: 8px; border: 1px solid #ddd; font-size: 10px; color: #555;'>P9Q8R7S6</td>
+       </tr>
+     </tbody>
+   </table>
+  </div>
+
+  <!-- III. HATA SINIFI BAZLI ÖZET -->
+  <div style='margin-top: 35px; margin-bottom: 25px;'>
+   <div style='border-left: 6px solid #2E7D32; padding-left: 10px; margin-bottom: 15px;'>
+     <h2 style='color: #2E7D32; font-family: Calibri, sans-serif; margin: 0;'>III. Hata Sınıfı Bazlı Operasyonel Özet</h2>
+   </div>
+   <table border='0' style='border-collapse: collapse; width: 100%; font-family: Calibri, Arial, sans-serif; font-size: 11px; table-layout: fixed;'>
+     <colgroup>
+       <col style='width: 34%;'><col style='width: 9%;'><col style='width: 13%;'><col style='width: 34%;'><col style='width: 10%;'>
+     </colgroup>
+     <thead>
+       <!-- FATAL HATA SINIFLARI -->
+       <tr style='background-color: #2E7D32; color: white;'>
+         <th colspan='5' style='padding: 10px; text-align: left;'>A. FATAL Kayıt Üreten Hata Sınıfları</th>
+       </tr>
+       <tr style='background-color: #f2f2f2; color: #000000; text-align: left; font-weight: bold;'>
+         <th style='padding: 8px; border: 1px solid #dee2e6;'>Hata Sınıfı</th>
+         <th style='padding: 8px; border: 1px solid #dee2e6; text-align: center;'>Toplam Fatal</th>
+         <th style='padding: 8px; border: 1px solid #dee2e6;'>En Çok Etkilenen Makine</th>
+         <th style='padding: 8px; border: 1px solid #dee2e6;'>En Çok Etkilenen Süreç</th>
+         <th style='padding: 8px; border: 1px solid #dee2e6;'>Sık FingerPrint</th>
+       </tr>
+     </thead>
+     <tbody>
+       <tr>
+         <td style='padding: 8px; border: 1px solid #dee2e6; background-color: #f8f9fa; font-weight: bold;'><i>System.TimeoutException</i></td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; text-align: center; color: #C00000; font-weight: bold;'>3</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; font-style: italic;'>Makine_1</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; font-style: italic;'>Süreç_1</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; font-size: 10px; color: #555;'>A1B2C3D4</td>
+       </tr>
+       
+       <tr style='height: 20px;'><td colspan='5' style='border: none;'></td></tr>
+       
+       <!-- ERROR HATA SINIFLARI -->
+       <tr style='background-color: #43A047; color: white;'>
+         <th colspan='5' style='padding: 10px; text-align: left;'>B. ERROR Kayıt Üreten Hata Sınıfları (Toplam Log >=10)</th>
+       </tr>
+       <tr style='background-color: #f2f2f2; color: #000000; text-align: left; font-weight: bold;'>
+         <th style='padding: 8px; border: 1px solid #dee2e6;'>Hata Sınıfı</th>
+         <th style='padding: 8px; border: 1px solid #dee2e6; text-align: center;'>Toplam Error</th>
+         <th style='padding: 8px; border: 1px solid #dee2e6;'>En Çok Etkilenen Makine</th>
+         <th style='padding: 8px; border: 1px solid #dee2e6;'>En Çok Etkilenen Süreç</th>
+         <th style='padding: 8px; border: 1px solid #dee2e6;'>Sık FingerPrint</th>
+       </tr>
+       <tr>
+         <td style='padding: 8px; border: 1px solid #dee2e6; background-color: #f8f9fa; font-weight: bold;'><i>BusinessRuleException</i></td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; text-align: center; color: #E67E22; font-weight: bold;'>24</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; font-style: italic;'>Makine_2</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; font-style: italic;'>Süreç_2</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; font-size: 10px; color: #555;'>X1Y2Z3W4</td>
+       </tr>
+       <tr>
+         <td style='padding: 8px; border: 1px solid #dee2e6; background-color: #f8f9fa; font-weight: bold;'><i>System.NullReferenceException</i></td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; text-align: center; color: #E67E22; font-weight: bold;'>12</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; font-style: italic;'>Makine_1</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; font-style: italic;'>Süreç_4</td>
+         <td style='padding: 8px; border: 1px solid #dee2e6; font-size: 10px; color: #555;'>P9Q8R7S6</td>
+       </tr>
+     </tbody>
+   </table>
+  </div>
+
+  <div style='background-color: #f8f9fa; padding: 15px; border-top: 1px solid #dee2e6; font-size: 11px; color: #777;'>
+    <p><b>Bilgi:</b> Bu rapor UiPath Robotu tarafından otomatik olarak oluşturulmuştur. Detaylı analiz için ekteki Excel dosyasını inceleyiniz.</p>
+  </div>
+  
+ </div>
+</body>
+</html>

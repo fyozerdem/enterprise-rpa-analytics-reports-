@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPA Log Analiz Dashboard - Örnek Şablon</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { 
+            --bg-color: #f4f6f9; --card-bg: #ffffff; --text-main: #2d3436; 
+            --text-muted: #636e72; --border-color: #dfe6e9; --fatal-color: #c0392b; 
+            --error-color: #e67e22; --faulted-color: #f39c12; --primary: #0984e3; 
+            --fatal-bg: #fff5f5; --error-bg: #fff8f2; --faulted-bg: #fffbf0; --primary-bg: #f0f8ff; 
+        }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-color); margin: 0; padding: 25px; color: var(--text-main); }
+        .header-container { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .header-container h1 { margin: 0; font-size: 24px; font-weight: 600; color: #2d3436; }
+        .header-container p { margin: 5px 0 0 0; color: var(--text-muted); font-size: 13px; }
+        .kpi-container { display: flex; gap: 15px; margin-bottom: 25px; }
+        .kpi-card { background: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); flex: 1; border-left: 5px solid #ccc; display: flex; flex-direction: column; justify-content: center;}
+        .kpi-card h3 { margin: 0 0 5px 0; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;}
+        .kpi-card .value { font-size: 32px; font-weight: 700; line-height: 1; }
+        .charts-row { display: flex; gap: 15px; margin-bottom: 25px; }
+        .chart-box { background: var(--card-bg); padding: 15px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .chart-small { flex: 1; height: 260px; }
+        .chart-large { flex: 1.5; height: 260px; }
+        .dashboard-bottom { display: flex; gap: 20px; height: 650px; }
+        .sidebar { width: 300px; background: var(--card-bg); border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); display: flex; flex-direction: column; overflow: hidden; }
+        .sidebar-tabs { display: flex; background: #f8f9fa; border-bottom: 1px solid var(--border-color); }
+        .tab-btn { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text-muted); transition: 0.2s; border-bottom: 2px solid transparent;}
+        .tab-btn:hover { color: var(--primary); }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: #fff;}
+        .search-box { padding: 15px; border-bottom: 1px solid var(--border-color); }
+        .search-box input { width: 100%; padding: 10px 15px; border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box; outline: none; font-size: 13px; background: #fdfdfd;}
+        .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(9, 132, 227, 0.1); }
+        .menu-list { overflow-y: auto; flex: 1; padding: 10px 0; }
+        .menu-item { padding: 12px 20px; cursor: pointer; font-size: 13px; border-left: 3px solid transparent; display: flex; justify-content: space-between; align-items: center; color: #4a4a4a;}
+        .menu-item:hover { background: #f8f9fa; }
+        .menu-item.active { background: #f0f7fd; border-left-color: var(--primary); font-weight: 600; color: var(--primary); }
+        .item-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 190px; }
+        .menu-count { font-size: 11px; background: #eee; padding: 2px 8px; border-radius: 10px; color: #777;}
+        .menu-item.active .menu-count { background: #d0e7f9; color: var(--primary); }
+        .content-area { flex: 1; background: var(--card-bg); border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); padding: 20px; display: flex; flex-direction: column; overflow: hidden; }
+        .content-header { border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: flex-end;}
+        .content-header h2 { margin: 0; font-size: 20px; font-weight: 600; color: var(--text-main); }
+        .process-kpis { display: flex; gap: 15px; margin-bottom: 15px; }
+        .p-kpi-card { padding: 12px; border-radius: 6px; border: 1px solid var(--border-color); flex: 1; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);}
+        .p-kpi-card .p-title { font-weight: 600; font-size: 14px; display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(0,0,0,0.1); padding-bottom: 5px; margin-bottom: 2px;}
+        .p-kpi-card .p-stat { font-size: 11px; display: flex; justify-content: space-between; color: var(--text-main); }
+        .p-kpi-card .p-stat span { color: var(--text-muted); }
+        .filter-section { background: #fcfcfc; border: 1px solid var(--border-color); padding: 12px 15px; border-radius: 8px; margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; font-size: 12px;}
+        .filter-group { display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-weight: 500;}
+        .filter-group input[type='date'] { width: 110px; padding: 5px 8px; border: 1px solid var(--border-color); border-radius: 4px; outline: none; font-size: 11px; color: var(--text-main); background: #fff;}
+        .filter-group select { width: 140px; min-width: 140px; max-width: 140px; padding: 5px 8px; border: 1px solid var(--border-color); border-radius: 4px; outline: none; font-size: 11px; color: var(--text-main); background: #fff; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+        .checkbox-group { display: flex; gap: 10px; }
+        .checkbox-group label { display: flex; align-items: center; gap: 4px; cursor: pointer; color: var(--text-main); }
+        .reset-btn { background: #ecf0f1; color: #34495e; border: 1px solid #bdc3c7; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 11px; transition: 0.2s; margin-left: auto;}
+        .reset-btn:hover { background: #e0e6e8; }
+        .table-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 11px; color: var(--text-muted); font-weight: 500;}
+        .table-container { overflow-y: auto; flex: 1; border: 1px solid var(--border-color); border-radius: 6px;}
+        table.data-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        table.data-table th, table.data-table td { border-bottom: 1px solid var(--border-color); padding: 10px 12px; text-align: left; }
+        table.data-table th { background-color: #f8f9fa; color: var(--text-muted); font-weight: 600; position: sticky; top: 0; z-index: 10; font-size: 11px;}
+        table.data-table tr:hover { background-color: #fcfcfc; }
+        .badge { padding: 4px 6px; border-radius: 4px; font-weight: 700; font-size: 9px; letter-spacing: 0.5px; display: inline-block; text-align: center; min-width: 45px;}
+        .badge-fatal { background: #fadbd8; color: #c0392b; border: 1px solid #f5b7b1; }
+        .badge-error { background: #fdebd0; color: #e67e22; border: 1px solid #f8c471;}
+        .badge-faulted { background: #fcf3cf; color: #d35400; border: 1px solid #f9e79f;}
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <div>
+            <h1>🚀 RPA Operasyonel Aylık Log Analiz Dashboard'u</h1>
+            <p>Rapor Dönemi: 01.09.2026 - 30.09.2026</p>
+        </div>
+    </div>
+
+    <div class="kpi-container">
+        <div class="kpi-card" style="border-left-color: var(--fatal-color);">
+            <h3>Toplam Fatal</h3>
+            <div class="value" style="color: var(--fatal-color);" id="kpiFatal">0</div>
+        </div>
+        <div class="kpi-card" style="border-left-color: var(--error-color);">
+            <h3>Toplam Error</h3>
+            <div class="value" style="color: var(--error-color);" id="kpiError">0</div>
+        </div>
+        <div class="kpi-card" style="border-left-color: var(--faulted-color);">
+            <h3>Toplam Faulted</h3>
+            <div class="value" style="color: var(--faulted-color);" id="kpiFaulted">0</div>
+        </div>
+        <div class="kpi-card" style="border-left-color: var(--primary);">
+            <h3>Etkilenen Süreç / Makine</h3>
+            <div class="value" style="color: var(--primary);" id="kpiProcess">0 / 0</div>
+        </div>
+    </div>
+
+    <div class="charts-row">
+        <div class="chart-box chart-large"><canvas id="trendChart"></canvas></div>
+        <div class="chart-box chart-large"><canvas id="processChart"></canvas></div>
+        <div class="chart-box chart-small"><canvas id="machineChart"></canvas></div>
+    </div>
+
+    <div class="dashboard-bottom">
+        <div class="sidebar">
+            <div class="sidebar-tabs">
+                <div class="tab-btn active" id="tabProcess" onclick="switchTab('process')">Süreçler</div>
+                <div class="tab-btn" id="tabMachine" onclick="switchTab('machine')">Makineler</div>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Listede ara..." onkeyup="renderSidebar()">
+            </div>
+            <div class="menu-list" id="sidebarList"></div>
+        </div>
+
+        <div class="content-area">
+            <div id="welcomeMsg" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center; color:#7f8c8d;">
+                <div style="font-size:60px; margin-bottom:20px;">📊</div>
+                <h2 style="color:#2c3e50; margin:0 0 10px 0; font-size:24px;">Dashboard'a Hoş Geldiniz</h2>
+                <p style="margin:0; max-width:400px; line-height:1.6; font-size:15px;">Detaylı log kayıtlarını, tabloları ve filtreleri görüntülemek için lütfen sol taraftaki menüden bir <b>Süreç</b> veya <b>Makine</b> seçiniz.</p>
+            </div>
+
+            <div id="detailContent" style="display:none; flex-direction:column; flex:1; overflow:hidden;">
+                <div class="content-header">
+                    <h2 id="detailTitle">...</h2>
+                </div>
+                <div class="process-kpis" id="detailKpis"></div>
+
+                <div class="filter-section">
+                    <div class="filter-group">
+                        Tarih: <input type="date" id="startDate" onchange="filterChanged()"> - <input type="date" id="endDate" onchange="filterChanged()">
+                    </div>
+                    <div class="filter-group">
+                        Tip:
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" id="chkFatal" class="type-filter" value="FATAL" checked onchange="filterChanged()"> FATAL</label>
+                            <label><input type="checkbox" id="chkError" class="type-filter" value="ERROR" checked onchange="filterChanged()"> ERROR</label>
+                            <label><input type="checkbox" id="chkFaulted" class="type-filter" value="FAULTED" checked onchange="filterChanged()"> FAULTED</label>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <span id="lblDynamicFilter">Makine:</span>
+                        <select id="dynamicFilter" onchange="filterChanged()"><option value="">Tümü</option></select>
+                    </div>
+                    <div class="filter-group">
+                        Sınıf:
+                        <select id="classFilter" onchange="filterChanged()"><option value="">Tümü</option></select>
+                    </div>
+                    <button class="reset-btn" onclick="resetFiltersBtn()">Sıfırla</button>
+                </div>
+
+                <div class="table-header-row">
+                    <div id="rowCount">Filtrelenen Kayıt: 0</div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead id="tableHead"></thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ÖRNEK VERİ SETİ (DUMMY DATA)
+        const rawData = [
+            { date: '2026-09-01 08:15:22', type: 'FATAL', process: 'Süreç_1', machine: 'Makine_1', errorClass: 'System.TimeoutException', issue: 'Zaman aşımına uğradı.', fingerprint: 'A1B2' },
+            { date: '2026-09-03 14:05:11', type: 'ERROR', process: 'Süreç_2', machine: 'Makine_3', errorClass: 'BusinessRuleException', issue: 'İş kuralı ihlali tespit edildi.', fingerprint: 'E5F6' },
+            { date: '2026-09-07 09:20:00', type: 'FAULTED', process: 'Süreç_1', machine: 'Makine_3', errorClass: 'UiPath.Core.SelectorNotFoundException', issue: 'Arayüzdeki selector yapısı değişmiş.', fingerprint: 'J9K0' },
+            { date: '2026-09-12 11:45:00', type: 'FATAL', process: 'Süreç_3', machine: 'Makine_3', errorClass: 'System.Net.WebException', issue: 'Ağ bağlantısı koptu.', fingerprint: 'N3O4' },
+            { date: '2026-09-15 10:10:10', type: 'ERROR', process: 'Süreç_3', machine: 'Makine_2', errorClass: 'BusinessRuleException', issue: 'Girdi verisi formatı hatalı.', fingerprint: 'R7S8' },
+            { date: '2026-09-18 16:30:00', type: 'FATAL', process: 'Süreç_4', machine: 'Makine_2', errorClass: 'System.NullReferenceException', issue: 'Değişken tanımlanmamış.', fingerprint: 'V1W2' },
+            { date: '2026-09-22 08:00:15', type: 'FATAL', process: 'Süreç_1', machine: 'Makine_2', errorClass: 'UiPath.Core.ElementOperationException', issue: 'Butona tıklanamadı.', fingerprint: 'Z5A6' },
+            { date: '2026-09-25 13:45:00', type: 'FATAL', process: 'Süreç_3', machine: 'Makine_3', errorClass: 'System.IO.IOException', issue: 'Erişim yetkisi reddedildi.', fingerprint: 'H3I4' },
+            { date: '2026-09-28 09:15:00', type: 'ERROR', process: 'Süreç_4', machine: 'Makine_4', errorClass: 'BusinessRuleException', issue: 'Toplam limit aşıldı.', fingerprint: 'P1Q2' },
+            { date: '2026-09-30 11:10:00', type: 'FAULTED', process: 'Süreç_2', machine: 'Makine_2', errorClass: 'System.Data.DataException', issue: 'Satır dönüşüm işlemi başarısız.', fingerprint: 'T5U6' }
+        ];
+
+        // Temel Javascript Mantığı
+        const processes = [...new Set(rawData.map(x => x.process))].sort();
+        const machines = [...new Set(rawData.map(x => x.machine))].sort();
+        const errClassesList = [...new Set(rawData.map(x => x.errorClass))].sort();
+        let currentMode = 'process'; 
+        let selectedEntity = null;
+
+        window.onload = function() {
+            document.getElementById('kpiFatal').innerText = rawData.filter(x => x.type === 'FATAL').length;
+            document.getElementById('kpiError').innerText = rawData.filter(x => x.type === 'ERROR').length;
+            document.getElementById('kpiFaulted').innerText = rawData.filter(x => x.type === 'FAULTED').length;
+            document.getElementById('kpiProcess').innerText = processes.length + ' / ' + machines.length;
+            
+            if(rawData.length > 0) { 
+                renderCharts(); 
+                renderSidebar(); 
+            }
+        };
+
+        function renderCharts() { 
+            Chart.defaults.font.family = "'Segoe UI', sans-serif"; 
+            Chart.defaults.color = '#636e72';
+            
+            let days = [...new Set(rawData.map(x => x.date.substring(0, 10)))].sort();
+            let trendFatal = days.map(d => rawData.filter(x => x.date.substring(0,10) === d && x.type === 'FATAL').length);
+            let trendError = days.map(d => rawData.filter(x => x.date.substring(0,10) === d && x.type === 'ERROR').length);
+            
+            new Chart(document.getElementById('trendChart'), { 
+                type: 'line', 
+                data: { 
+                    labels: days.map(d => d.substring(8,10) + '.' + d.substring(5,7)), 
+                    datasets: [ 
+                        { label: 'Fatal', data: trendFatal, borderColor: '#c0392b', backgroundColor: 'rgba(192, 57, 43, 0.1)', fill: true, tension: 0.3, pointRadius: 3 }, 
+                        { label: 'Error', data: trendError, borderColor: '#e67e22', backgroundColor: 'transparent', fill: false, tension: 0.3, pointRadius: 3 } 
+                    ] 
+                }, 
+                options: { 
+                    responsive: true, maintainAspectRatio: false, 
+                    scales: { x: { grid: { display: false } }, y: { beginAtZero: true } }, 
+                    plugins: { 
+                        title: { display: true, text: 'Günlük Log Trendi', font: {size: 13, weight:'bold'} }, 
+                        legend: { position: 'top', labels: {usePointStyle:true, boxWidth:8, font:{size:10}} } 
+                    } 
+                } 
+            });
+
+            let processStats = processes.map(p => { 
+                let f = rawData.filter(x => x.process === p && x.type === 'FATAL').length; 
+                let e = rawData.filter(x => x.process === p && x.type === 'ERROR').length; 
+                let flt = rawData.filter(x => x.process === p && x.type === 'FAULTED').length; 
+                return { process: p, fatal: f, error: e, faulted: flt }; 
+            });
+            processStats.sort((a,b) => b.fatal !== a.fatal ? b.fatal - a.fatal : b.error - a.error); 
+            let top5P = processStats.slice(0, 5);
+            
+            new Chart(document.getElementById('processChart'), { 
+                type: 'bar', 
+                data: { 
+                    labels: top5P.map(x => x.process.length>12 ? x.process.substring(0,12)+'...' : x.process), 
+                    datasets: [ 
+                        { label: 'Fatal', data: top5P.map(x=>x.fatal), backgroundColor: '#c0392b' }, 
+                        { label: 'Error', data: top5P.map(x=>x.error), backgroundColor: '#e67e22' }, 
+                        { label: 'Faulted', data: top5P.map(x=>x.faulted), backgroundColor: '#f39c12' } 
+                    ] 
+                }, 
+                options: { 
+                    responsive: true, maintainAspectRatio: false, 
+                    interaction: { mode: 'index', intersect: false }, 
+                    scales: { x: { stacked: true, grid:{display:false}, ticks:{font:{size:10}} }, y: { stacked: true } }, 
+                    plugins: { 
+                        title: { display: true, text: 'Top 5 Süreç (Öncelik: Fatal > Error)', font: {size: 13, weight:'bold'} }, 
+                        legend: { position: 'top', labels: {usePointStyle:true, boxWidth:8, font:{size:10}} } 
+                    } 
+                } 
+            });
+
+            let mStats = machines.map(m => { 
+                let f = rawData.filter(x => x.machine === m && x.type === 'FATAL').length; 
+                let e = rawData.filter(x => x.machine === m && x.type === 'ERROR').length; 
+                return { machine: m, fatal: f, error: e }; 
+            });
+            mStats.sort((a,b) => b.fatal !== a.fatal ? b.fatal - a.fatal : b.error - a.error); 
+            let top5M = mStats.slice(0, 5);
+            
+            new Chart(document.getElementById('machineChart'), { 
+                type: 'bar', 
+                data: { 
+                    labels: top5M.map(x=>x.machine), 
+                    datasets: [ 
+                        { label: 'Fatal', data: top5M.map(x=>x.fatal), backgroundColor: '#c0392b' }, 
+                        { label: 'Error', data: top5M.map(x=>x.error), backgroundColor: '#e67e22' } 
+                    ] 
+                }, 
+                options: { 
+                    indexAxis: 'y', responsive: true, maintainAspectRatio: false, 
+                    interaction: { mode: 'index', intersect: false }, 
+                    scales: { x: { stacked: true, grid:{display:false} }, y: { stacked: true, grid:{display:false}, ticks:{font:{size:10}} } }, 
+                    plugins: { 
+                        title: { display: true, text: 'Top 5 Makine (Öncelik: Fatal > Error)', font: {size: 13, weight:'bold'} }, 
+                        legend: { position: 'top', labels:{usePointStyle:true, boxWidth:8, font:{size:10}} } 
+                    } 
+                } 
+            });
+        }
+
+        function filterChanged() { 
+            updateDynamicDropdowns(); 
+            renderTable(); 
+        }
+
+        function updateDynamicDropdowns() {
+            let startDate = document.getElementById('startDate').value; 
+            let endDate = document.getElementById('endDate').value;
+            let dynVal = document.getElementById('dynamicFilter').value; 
+            let clsVal = document.getElementById('classFilter').value;
+            let selectedTypes = []; 
+            document.querySelectorAll('.type-filter:checked').forEach(cb => selectedTypes.push(cb.value));
+            
+            let baseData = rawData.filter(row => { 
+                let isMatch = currentMode === 'process' ? row.process === selectedEntity : row.machine === selectedEntity; 
+                if(!isMatch) return false; 
+                let rowDay = row.date.substring(0, 10); 
+                if(startDate && rowDay < startDate) return false; 
+                if(endDate && rowDay > endDate) return false; 
+                if(!selectedTypes.includes(row.type)) return false; 
+                return true; 
+            });
+            
+            let dataForDyn = baseData; 
+            if(clsVal) dataForDyn = baseData.filter(x => x.errorClass === clsVal);
+            
+            let dataForCls = baseData; 
+            if(dynVal) dataForCls = baseData.filter(x => (currentMode === 'process' ? x.machine : x.process) === dynVal);
+            
+            let dynFilter = document.getElementById('dynamicFilter'); 
+            let clsFilter = document.getElementById('classFilter');
+            dynFilter.innerHTML = '<option value="">Tümü</option>'; 
+            clsFilter.innerHTML = '<option value="">Tümü</option>';
+            
+            let secEntities = [...new Set(dataForDyn.map(x => currentMode === 'process' ? x.machine : x.process))].sort();
+            secEntities.forEach(se => { 
+                let count = dataForDyn.filter(x => (currentMode === 'process' ? x.machine : x.process) === se).length; 
+                dynFilter.innerHTML += `<option value='${se}'>${se.replace(/_/g, ' ')} (${count})</option>`; 
+            });
+            
+            let clsEntities = [...new Set(dataForCls.map(x => x.errorClass))].sort();
+            clsEntities.forEach(ce => { 
+                let count = dataForCls.filter(x => x.errorClass === ce).length; 
+                clsFilter.innerHTML += `<option value='${ce}'>${ce.replace('Exception','')} (${count})</option>`; 
+            });
+            
+            if (secEntities.includes(dynVal)) dynFilter.value = dynVal; 
+            if (clsEntities.includes(clsVal)) clsFilter.value = clsVal;
+        }
+
+        function resetFiltersBtn() { 
+            document.getElementById('startDate').value = ''; 
+            document.getElementById('endDate').value = ''; 
+            document.getElementById('chkFatal').checked = true; 
+            document.getElementById('chkError').checked = true; 
+            document.getElementById('chkFaulted').checked = true; 
+            document.getElementById('dynamicFilter').value = ''; 
+            document.getElementById('classFilter').value = ''; 
+            filterChanged(); 
+        }
+
+        function switchTab(mode) { 
+            currentMode = mode; 
+            document.getElementById('tabProcess').classList.toggle('active', mode === 'process'); 
+            document.getElementById('tabMachine').classList.toggle('active', mode === 'machine'); 
+            document.getElementById('searchInput').value = ''; 
+            selectedEntity = null; 
+            
+            document.getElementById('lblDynamicFilter').innerText = mode === 'process' ? 'Makine:' : 'Süreç:';
+            document.getElementById('welcomeMsg').style.display = 'flex'; 
+            document.getElementById('detailContent').style.display = 'none'; 
+            renderSidebar(); 
+        }
+
+        function renderSidebar() { 
+            const listObj = document.getElementById('sidebarList'); 
+            const searchTxt = document.getElementById('searchInput').value.toLowerCase(); 
+            listObj.innerHTML = ''; 
+            
+            let items = currentMode === 'process' ? processes : machines; 
+            items.forEach(item => { 
+                if(item.toLowerCase().includes(searchTxt)) { 
+                    let count = rawData.filter(x => currentMode === 'process' ? x.process === item : x.machine === item).length; 
+                    let div = document.createElement('div'); 
+                    div.className = 'menu-item' + (item === selectedEntity ? ' active' : ''); 
+                    div.innerHTML = `<span class='item-name' title='${item}'>${item.replace(/_/g, ' ')}</span> <span class='menu-count'>${count}</span>`; 
+                    
+                    div.onclick = () => { 
+                        selectedEntity = item;
+                        document.getElementById('startDate').value = ''; 
+                        document.getElementById('endDate').value = '';
+                        document.getElementById('chkFatal').checked = true; 
+                        document.getElementById('chkError').checked = true; 
+                        document.getElementById('chkFaulted').checked = true;
+                        document.getElementById('dynamicFilter').value = ''; 
+                        document.getElementById('classFilter').value = '';
+                        document.getElementById('welcomeMsg').style.display = 'none'; 
+                        document.getElementById('detailContent').style.display = 'flex'; 
+                        
+                        renderSidebar(); 
+                        renderDetailArea(); 
+                    }; 
+                    listObj.appendChild(div); 
+                } 
+            }); 
+        }
+
+        function getTop(arr, prop) { 
+            if(arr.length === 0) return '-'; 
+            let freq = {}; 
+            arr.forEach(x => freq[x[prop]] = (freq[x[prop]] || 0) + 1); 
+            return Object.keys(freq).reduce((a, b) => freq[a] > freq[b] ? a : b); 
+        }
+        
+        const trunc = (s, n) => s.length > n ? s.substr(0,n-3)+'...' : s;
+
+        function buildDetailCard(title, data, type, color, bgColor) { 
+            let fData = data.filter(x => x.type === type); 
+            if(fData.length === 0) { 
+                return `<div class='p-kpi-card' style='border-top: 3px solid ${color}; background-color: ${bgColor}; opacity:0.6;'><div class='p-title' style='color:${color}'>${title} <span>0</span></div><div class='p-stat'>Kayıt bulunamadı.</div></div>`; 
+            } 
+            let secLabel = currentMode === 'process' ? 'Makine' : 'Süreç'; 
+            let secProp = currentMode === 'process' ? 'machine' : 'process'; 
+            let topSec = getTop(fData, secProp); 
+            let topClass = getTop(fData, 'errorClass').replace('Exception',''); 
+            let topFp = getTop(fData, 'fingerprint'); 
+            
+            return `<div class='p-kpi-card' style='border-top: 3px solid ${color}; background-color: ${bgColor};'><div class='p-title' style='color:${color}'>${title} <span>${fData.length}</span></div><div class='p-stat'><span>En Çok ${secLabel}:</span> <b title='${topSec}'>${trunc(topSec.replace(/_/g, ' '), 25)}</b></div><div class='p-stat'><span>En Çok Sınıf:</span> <b title='${topClass}'>${trunc(topClass, 30)}</b></div><div class='p-stat'><span>Sık FP:</span> <b>${trunc(topFp, 15)}</b></div></div>`; 
+        }
+
+        function renderDetailArea() { 
+            let titlePrefix = currentMode === 'process' ? 'Süreç:' : 'Makine:'; 
+            document.getElementById('detailTitle').innerText = `${titlePrefix} ${selectedEntity.replace(/_/g, ' ')}`; 
+            
+            let entityData = rawData.filter(x => currentMode === 'process' ? x.process === selectedEntity : x.machine === selectedEntity);
+
+            if(entityData.length > 0) { 
+                let dates = entityData.map(x => x.date.substring(0,10)); dates.sort(); 
+                let minD = dates[0]; let maxD = dates[dates.length-1]; 
+                document.getElementById('startDate').setAttribute('min', minD); 
+                document.getElementById('startDate').setAttribute('max', maxD); 
+                document.getElementById('endDate').setAttribute('min', minD); 
+                document.getElementById('endDate').setAttribute('max', maxD); 
+            }
+
+            document.getElementById('detailKpis').innerHTML = buildDetailCard('🔴 FATAL', entityData, 'FATAL', 'var(--fatal-color)', 'var(--fatal-bg)') + buildDetailCard('🟠 ERROR', entityData, 'ERROR', 'var(--error-color)', 'var(--error-bg)') + buildDetailCard('🟡 FAULTED', entityData, 'FAULTED', 'var(--faulted-color)', 'var(--faulted-bg)'); 
+            
+            updateDynamicDropdowns(); 
+            
+            let thHtml = `<tr><th style='width:14%'>TARİH</th><th style='width:6%'>TİP</th><th style='width:18%'>${currentMode === 'process' ? 'MAKİNE' : 'SÜREÇ'}</th><th style='width:22%'>HATA SINIFI</th><th style='width:25%'>TESPİT EDİLEN SORUN</th><th style='width:15%'>FINGERPRINT</th></tr>`; 
+            document.getElementById('tableHead').innerHTML = thHtml; 
+            
+            renderTable(); 
+        }
+
+        function renderTable() { 
+            let startDate = document.getElementById('startDate').value; 
+            let endDate = document.getElementById('endDate').value; 
+            let dynVal = document.getElementById('dynamicFilter').value; 
+            let clsVal = document.getElementById('classFilter').value; 
+            let selectedTypes = []; 
+            
+            document.querySelectorAll('.type-filter:checked').forEach(cb => selectedTypes.push(cb.value)); 
+            
+            let filtered = rawData.filter(row => { 
+                let isMatch = currentMode === 'process' ? row.process === selectedEntity : row.machine === selectedEntity; 
+                if(!isMatch) return false; 
+                
+                let rowDay = row.date.substring(0, 10); 
+                if(startDate && rowDay < startDate) return false; 
+                if(endDate && rowDay > endDate) return false; 
+                if(!selectedTypes.includes(row.type)) return false; 
+                
+                let secVal = currentMode === 'process' ? row.machine : row.process; 
+                if(dynVal !== '' && secVal !== dynVal) return false; 
+                if(clsVal !== '' && row.errorClass !== clsVal) return false; 
+                return true; 
+            }); 
+            
+            filtered.sort((a,b) => b.date.localeCompare(a.date)); 
+            document.getElementById('rowCount').innerText = `Filtrelenen Kayıt: ${filtered.length}`; 
+            
+            const tBody = document.getElementById('tableBody'); 
+            tBody.innerHTML = ''; 
+            
+            if(filtered.length === 0) { 
+                tBody.innerHTML = `<tr><td colspan='6' style='text-align:center; padding:30px; color:#a4b0be;'>Filtrelere uygun kayıt bulunamadı.</td></tr>`; 
+                return; 
+            } 
+            
+            filtered.forEach(row => { 
+                let badgeClass = row.type === 'FATAL' ? 'badge-fatal' : (row.type === 'ERROR' ? 'badge-error' : 'badge-faulted'); 
+                let dynamicCol = currentMode === 'process' ? row.machine : row.process; 
+                
+                let dParts = row.date.split(' '); 
+                let ymd = dParts[0].split('-'); 
+                let tableDate = ymd[2] + '.' + ymd[1] + '.' + ymd[0] + ' ' + (dParts[1] || '');
+                
+                let tr = `<tr><td style='color:#636e72;'>${tableDate}</td><td><span class='badge ${badgeClass}'>${row.type}</span></td><td style='font-weight:600; color:#2d3436;'>${dynamicCol.replace(/_/g, ' ')}</td><td style='color:#636e72;'><i>${row.errorClass}</i></td><td style='color:#2d3436;'>${row.issue}</td><td style='font-family: monospace; color:#a4b0be;'>${row.fingerprint}</td></tr>`; 
+                tBody.innerHTML += tr; 
+            }); 
+        }
+    </script>
+</body>
+</html>

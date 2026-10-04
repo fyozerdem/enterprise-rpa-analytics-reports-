@@ -1,0 +1,185 @@
+<html>
+<head>
+<style>
+    body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; font-size: 13px; color: #333333; margin: 0; padding: 20px; background-color: #f4f7f6; }
+    .container { width: 100%; max-width: 1150px; margin: 0 auto; background-color: #ffffff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    table.data-table { border-collapse: collapse; width: 100%; margin-bottom: 25px; font-size: 13px; }
+    table.data-table th, table.data-table td { border: 1px solid #e1e5e8; text-align: center; padding: 10px 12px; }
+    table.data-table th { background-color: #2c3e50; color: #ffffff; font-weight: 600; }
+    table.data-table td:first-child, table.data-table th:first-child { text-align: left; }
+    table.data-table tr:nth-child(even) { background-color: #f9fbfc; }
+    h3 { color: #1a5276; border-bottom: 2px solid #5dade2; padding-bottom: 5px; font-size: 16px; margin-top: 25px; margin-bottom: 15px; }
+</style>
+</head>
+<body>
+
+<div class='container'>
+    <h2 style='color:#2c3e50; margin-top: 0;'>RPA Haftalık Queue Performans Raporu</h2>
+    <p style='color: #7f8c8d; font-size: 13px; margin-bottom: 25px;'>Bu e-posta robot performanslarını özetlemek için sistem tarafından otomatik üretilmiştir.</p>
+
+    <!-- ALARMLAR VE BİLDİRİMLER BÖLÜMÜ -->
+    <h3>🚨 HAFTALIK ÖZET VE ALARMLAR</h3>
+    
+    <div style='background-color: #fdf2f2; border-left: 4px solid #c0392b; padding: 12px 15px; margin-bottom: 15px; border-radius: 4px; color: #5a1e17;'>
+        <h4 style='color: #c0392b; margin: 0 0 8px 0; font-size: 14px;'>🚨 Acil İnceleme Gerektiren Süreçler</h4>
+        <ul style='margin: 0; padding-left: 20px;'>
+            <li style='margin-bottom: 5px;'>🛑 <b>KRİTİK:</b> <b>Süreç 3</b> sürecinde işlenen <b>120</b> kaydın neredeyse hiçbiri başarılı olamamıştır! (Başarı Oranı: <b>%5.0</b>).</li>
+        </ul>
+    </div>
+
+    <div style='background-color: #f8f9fa; border-left: 4px solid #95a5a6; padding: 12px 15px; margin-bottom: 15px; border-radius: 4px; color: #2c3e50;'>
+        <h4 style='color: #7f8c8d; margin: 0 0 8px 0; font-size: 14px;'>ℹ️ Pasif Durumdaki / İptal Edilen İşlemler</h4>
+        <ul style='margin: 0; padding-left: 20px;'>
+            <li style='margin-bottom: 5px;'>⏸️ <b>Süreç 2</b> sürecine gelen <b>800</b> işlem In Progress (İşleniyor) statüsünde asılı kalmıştır.</li>
+        </ul>
+    </div>
+
+    <div style='background-color: #fff4e6; border-left: 4px solid #d35400; padding: 12px 15px; margin-bottom: 15px; border-radius: 4px; color: #7e3300;'>
+        <h4 style='color: #d35400; margin: 0 0 8px 0; font-size: 14px;'>⏳ Yüksek Efor ve Zaman Kaybı (AppEx ve Retry Kaynaklı)</h4>
+        <ul style='margin: 0; padding-left: 20px;'>
+            <li style='margin-bottom: 5px;'>⏳ <b>Süreç 1</b> sürecinde App Exception ve Retry'lar nedeniyle yaklaşık <b>3.5 Saat</b> boşa harcanmıştır. (Sadece üretken (Başarılı+BizEx) işlemler 5 Saat sürerken, toplam robot eforu 8.5 Saat olmuştur.)</li>
+        </ul>
+    </div>
+
+    <div style='background-color: #fce4ec; border-left: 4px solid #e67e22; padding: 12px 15px; margin-bottom: 15px; border-radius: 4px; color: #7e3300;'>
+        <h4 style='color: #d35400; margin: 0 0 8px 0; font-size: 14px;'>⚠️ Kritik Hata (Exception) Artışları</h4>
+        <ul style='margin: 0; padding-left: 20px;'>
+            <li style='margin-bottom: 5px;'>⚙️ <b>Süreç 1</b> sürecinde bu hafta <b>50</b> adet nihai App Exception alınmıştır. (Önceki hafta referansı: 20)</li>
+        </ul>
+    </div>
+
+    <div style='background-color: #fef9f1; border-left: 4px solid #f1c40f; padding: 12px 15px; margin-bottom: 15px; border-radius: 4px; color: #333333;'>
+        <h4 style='color: #f39c12; margin: 0 0 8px 0; font-size: 14px;'>⏱️ Performans ve Hız Düşüşleri</h4>
+        <ul style='margin: 0; padding-left: 20px;'>
+            <li style='margin-bottom: 5px;'>⚠️ <b>Süreç 2</b> sürecinin ortalama işlem süresi geçen haftaya kıyasla <b>%50</b> oranında yavaşlamıştır. (Önceki: 30 sn -> Bu Hafta: 45 sn)</li>
+        </ul>
+    </div>
+
+    <!-- 1. TABLO -->
+    <h3>📊 1. KUYRUK PERFORMANS ÖZETİ (HAFTALIK)</h3>
+    <div style='font-size: 13px; color: #4a5a60; margin-top: -5px; margin-bottom: 14px; padding-left: 2px;'>
+        <i>* <b>Tamamlanan İşlem:</b> Başarılı + BizEx + AppEx + Abandoned<br>* <b>Başarı Oranı Formülü:</b> (Başarılı + BizEx) / Tamamlanan İşlemler</i>
+    </div>
+    <table class='data-table'>
+        <tr>
+            <th>Queue Name</th>
+            <th>Gelen Toplam</th>
+            <th>Tamamlanan</th>
+            <th>Başarılı</th>
+            <th>Biz Exception</th>
+            <th>App Exception</th>
+            <th>In Progress</th>
+            <th>Abandoned</th>
+            <th>Başarı Oranı</th>
+            <th>Önceki Haftaya Göre</th>
+        </tr>
+        <tr>
+            <td>Süreç 1</td>
+            <td>1500</td>
+            <td><b>1500</b></td>
+            <td><span style='color:#27ae60;'>1400</span></td>
+            <td><span style='color:#f39c12;'>50</span></td>
+            <td><span style='color:#c0392b; font-weight:bold;'>50</span></td>
+            <td>0</td>
+            <td>0</td>
+            <td><span style='color:#27ae60; font-weight:bold;'>%96.7</span></td>
+            <td><span style='color:#27ae60; font-weight:bold;'>&#11014; %1.2</span></td>
+        </tr>
+        <tr>
+            <td>Süreç 2</td>
+            <td>800</td>
+            <td><b>750</b></td>
+            <td><span style='color:#27ae60;'>700</span></td>
+            <td><span style='color:#f39c12;'>30</span></td>
+            <td><span style='color:#c0392b; font-weight:bold;'>20</span></td>
+            <td>50</td>
+            <td>0</td>
+            <td><span style='color:#27ae60; font-weight:bold;'>%97.3</span></td>
+            <td><span style='color:#c0392b; font-weight:bold;'>&#11015; %2.1</span></td>
+        </tr>
+        <tr>
+            <td>Süreç 3</td>
+            <td>120</td>
+            <td><b>100</b></td>
+            <td><span style='color:#27ae60;'>5</span></td>
+            <td><span style='color:#f39c12;'>0</span></td>
+            <td><span style='color:#c0392b; font-weight:bold;'>95</span></td>
+            <td>0</td>
+            <td>20</td>
+            <td><span style='color:#c0392b; font-weight:bold;'>%5.0</span></td>
+            <td><span style='color:#c0392b; font-weight:bold;'>&#11015; %80.0</span></td>
+        </tr>
+    </table>
+
+    <!-- 2. TABLO -->
+    <h3>⏱️ 2. HIZ VE PERFORMANS ÖZETİ (HAFTALIK)</h3>
+    <div style='font-size: 13px; color: #4a5a60; margin-top: -5px; margin-bottom: 14px; padding-left: 2px;'>
+        <i>* <b>Not 1:</b> In Progress ve Abandoned statüsündeki kayıtlar sistemsel efor yaratmadığı için süre hesaplamalarına <u>dahil edilmemiştir</u>.<br>* <b>Not 2:</b> 'Kayıp Toplam Süre' yalnızca App Exception (Nihai Sistem Hatası) ve Retried (Ara Deneme) işlemlerinin harcadığı süreleri kapsar, Başarılı/BizEx süreleri hariç tutulmuştur.</i>
+    </div>
+    <table class='data-table'>
+        <tr>
+            <th>Queue Name</th>
+            <th>Başarılı / Tamamlanan</th>
+            <th>Bu Hafta Ort. Hız<br><span style='font-size:11px; font-weight:normal;'>(Sadece Başarılı)</span></th>
+            <th>Üretken Toplam Süre<br><span style='font-size:11px; font-weight:normal;'>(Başarılı+BizEx)</span></th>
+            <th>Kayıp Toplam Süre<br><span style='font-size:11px; font-weight:normal;'>(AppEx+Retry)</span></th>
+            <th>Önceki Haftaya Göre Değişim<br><span style='font-size:11px; font-weight:normal;'>(Ort. Hız - Sadece Başarılı)</span></th>
+        </tr>
+        <tr style='background-color: #fef8ed;'>
+            <td>Süreç 1</td>
+            <td><b>1450</b> / 1500</td>
+            <td><b>12.5 sn</b></td>
+            <td>5 Saat</td>
+            <td><span style='font-weight:bold; color:#c0392b;'>3.5 Saat</span><br><span style='font-size:11px; color:#7f8c8d;'>(AppEx: 2.5 Saat | Retry: 1 Saat)</span></td>
+            <td><span style='color:#7f8c8d;'>Stabil (-)</span></td>
+        </tr>
+        <tr>
+            <td>Süreç 2</td>
+            <td><b>730</b> / 750</td>
+            <td><b>45 sn</b></td>
+            <td>9 Saat</td>
+            <td><span style='font-weight:bold; color:#c0392b;'>15 Dk</span><br><span style='font-size:11px; color:#7f8c8d;'>(AppEx: 10 Dk | Retry: 5 Dk)</span></td>
+            <td><span style='color:#c0392b; font-weight:bold;'>⬇ 15 sn (Yavaşladı)</span></td>
+        </tr>
+        <tr style='background-color: #fcf0ef;'>
+            <td>Süreç 3</td>
+            <td><b>5</b> / 100</td>
+            <td><b>5 sn</b></td>
+            <td>25 sn</td>
+            <td><span style='font-weight:bold; color:#c0392b;'>4 Saat</span><br><span style='font-size:11px; color:#7f8c8d;'>(AppEx: 4 Saat | Retry: -)</span></td>
+            <td><span style='color:#7f8c8d;'>-</span></td>
+        </tr>
+    </table>
+
+    <!-- 3. TABLO -->
+    <h3>🔄 3. RETRY (YENİDEN DENEME) ANALİZİ (HAFTALIK)</h3>
+    <div style='font-size: 13px; color: #4a5a60; margin-top: -5px; margin-bottom: 14px; padding-left: 2px;'>
+        <i>* <b>Not:</b> 'Boşa Giden Süre' alanları, sadece hata alıp robot tarafından yeniden kuyruğa atılan <u>Retried</u> statüsündeki ara denemelerin harcadığı toplam eforu göstermektedir.</i>
+    </div>
+    <table class='data-table'>
+        <tr>
+            <th>Queue Name</th>
+            <th>Bu Hafta Kurtarılan / Toplam</th>
+            <th>Bu Hafta Ara Deneme Kaybı<br><span style='font-size:11px; font-weight:normal;'>(Sadece Retried İşlemler)</span></th>
+            <th>Önceki Hafta Kurtarılan / Toplam</th>
+            <th>Önceki Hafta Ara Deneme Kaybı<br><span style='font-size:11px; font-weight:normal;'>(Sadece Retried İşlemler)</span></th>
+        </tr>
+        <tr>
+            <td>Süreç 1</td>
+            <td>120 / 150 (<span style='color:#27ae60; font-weight:bold;'>%80.0</span>)</td>
+            <td style='color:#c0392b;'><b>1 Saat</b></td>
+            <td>100 / 110 (<span style='color:#27ae60; font-weight:bold;'>%90.9</span>)</td>
+            <td>45 Dk</td>
+        </tr>
+        <tr>
+            <td>Süreç 2</td>
+            <td>10 / 15 (<span style='color:#27ae60; font-weight:bold;'>%66.6</span>)</td>
+            <td style='color:#c0392b;'><b>5 Dk</b></td>
+            <td>5 / 5 (<span style='color:#27ae60; font-weight:bold;'>%100.0</span>)</td>
+            <td>1 Dk</td>
+        </tr>
+    </table>
+
+</div>
+</body>
+</html>

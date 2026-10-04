@@ -1,0 +1,167 @@
+<html>
+<body style='font-family: Arial, sans-serif; color: #2d3748; line-height: 1.5; padding: 10px;'>
+
+    <!-- ANA BAŞLIK -->
+    <h2 style='font-family: Arial, sans-serif; color: #1f4e78; font-size: 20px; font-weight: bold; border-bottom: 2px solid #1f4e78; padding-bottom: 8px; margin-top: 5px; margin-bottom: 15px;'>
+        RPA Orchestrator Kontrol Raporu
+    </h2>
+
+
+    <!-- GİRİŞ METNİ -->
+    <p style='font-size: 13px; color: #4a5568;'>
+        Merhaba,<br>
+        Canlı ortamdaki süreç konfigürasyonları ile Orchestrator (Asset & Queue) nesnelerinin mevcut uyum durumu ve operasyonel analiz özeti aşağıda bilgilerinize sunulmuştur.
+    </p>
+
+    <!-- BÖLÜM 1 -->
+    <h3 style='font-family: Arial, sans-serif; color: #2d3748; font-size: 15px; font-weight: bold; margin-top: 25px; margin-bottom: 10px; border-left: 4px solid #1f4e78; padding-left: 10px;'>
+        1. Birden Fazla Sürece ve Bölüme Atanan Ortak Assetler (EBT-)
+    </h3>
+    <p style='font-size: 12px; color: #718096; margin-bottom: 10px;'>'EBT-' ile başlayan (EBT-S01039 hariç) birden fazla süreçte ve farklı bölümlerde kullanılan ortak assetlerin en yüksek kullanımdan başlayarak sıralı listesi.</p>
+    <table style='border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.04);'>
+        <tr style='background-color: #1f4e78; color: #ffffff;'>
+            <th style='padding: 12px 15px; border: 1px solid #e2e8f0; text-align: left; font-size: 13px; font-weight: bold; background-color: #1f4e78; color: #ffffff;'>Asset Adı</th>
+            <th style='padding: 12px 15px; border: 1px solid #e2e8f0; text-align: left; font-size: 13px; font-weight: bold; background-color: #1f4e78; color: #ffffff;; width: 110px;'>Süreç Sayısı</th>
+            <th style='padding: 12px 15px; border: 1px solid #e2e8f0; text-align: left; font-size: 13px; font-weight: bold; background-color: #1f4e78; color: #ffffff;'>Kullanıldığı Süreçler - Bölümler</th>
+        </tr>
+        <tr style='background-color: #ffffff;'>
+            <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>EBT-Asset_Ornek_1</td>
+            <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748; font-weight: bold; color: #1f4e78; text-align: center;'>3</td>
+            <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748; color: #4a5568; font-style: italic; line-height: 1.4;'>Surec_A ( IK ), Surec_B ( Finans ), Surec_C ( IT )</td>
+        </tr>
+        <tr style='background-color: #f8fafc;'>
+            <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>EBT-Asset_Ornek_2</td>
+            <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748; font-weight: bold; color: #1f4e78; text-align: center;'>2</td>
+            <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748; color: #4a5568; font-style: italic; line-height: 1.4;'>Surec_D ( Satis ), Surec_E ( Pazarlama )</td>
+        </tr>
+    </table>
+    <br>
+
+    <!-- BÖLÜM 2 -->
+    <h3 style='font-family: Arial, sans-serif; color: #2d3748; font-size: 15px; font-weight: bold; margin-top: 25px; margin-bottom: 10px; border-left: 4px solid #1f4e78; padding-left: 10px;'>
+        2. Orchestrator içerisinde bulunan herhangi bir sürece atanmamış Queue ve Assetler
+    </h3>
+    <p style='font-size: 12px; color: #718096; margin-bottom: 10px;'>Orchestrator üzerinde tanımlı olan fakat geliştirilen süreçlerde eşleşmesi bulunmayan asset ve queue isimleri.</p>
+    
+    <!-- Kullanılmayan Assetler Tablosu -->
+    <table style='border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.04);'>
+        <tr style='background-color: #1f4e78; color: #ffffff;'>
+            <th style='padding: 12px 15px; border: 1px solid #e2e8f0; text-align: left; font-size: 13px; font-weight: bold; background-color: #1f4e78; color: #ffffff;'>Kullanılmayan Asset İsimleri</th>
+            <th style='padding: 12px 15px; border: 1px solid #e2e8f0; text-align: left; font-size: 13px; font-weight: bold; background-color: #1f4e78; color: #ffffff;'>Açıklama</th>
+            <th style='padding: 12px 15px; border: 1px solid #e2e8f0; text-align: left; font-size: 13px; font-weight: bold; background-color: #1f4e78; color: #ffffff;'>Oluşturan Kişi</th>
+            <th style='padding: 12px 15px; border: 1px solid #e2e8f0; text-align: left; font-size: 13px; font-weight: bold; background-color: #1f4e78; color: #ffffff;'>Oluşturulma Tarihi</th>
+        </tr>
+        <tr style='background-color: #ffffff;'>
+            <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>Kullanilmayan_Asset_1</td>
+            <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>Gecici test asseti</td>
+            <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>Yazilimci_1</td>
+            <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>01.05.2023</td>
+        </tr>
+        <tr style='background-color: #f8fafc;'>
+            <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>Kullanilmayan_Asset_2</td>
+            <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>Bulunamadı</td>
+            <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>Yazilimci_2</td>
+            <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>12.08.2023</td>
+        </tr>
+    </table>
+    <br><br>
+
+    <!-- Kullanılmayan Queue'lar Tablosu -->
+    <table style='border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.04);'>
+        <tr style='background-color: #1f4e78; color: #ffffff;'>
+            <th style='padding: 12px 15px; border: 1px solid #e2e8f0; text-align: left; font-size: 13px; font-weight: bold; background-color: #1f4e78; color: #ffffff;'>Kullanılmayan Queue İsimleri</th>
+            <th style='padding: 12px 15px; border: 1px solid #e2e8f0; text-align: left; font-size: 13px; font-weight: bold; background-color: #1f4e78; color: #ffffff;'>Açıklama</th>
+            <th style='padding: 12px 15px; border: 1px solid #e2e8f0; text-align: left; font-size: 13px; font-weight: bold; background-color: #1f4e78; color: #ffffff;'>Oluşturulma Tarihi</th>
+        </tr>
+        <tr style='background-color: #ffffff;'>
+            <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>Eski_Islem_Kuyrugu</td>
+            <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>Eski versiyon kuyruğu, kullanılmıyor</td>
+            <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>20.09.2022</td>
+        </tr>
+    </table>
+
+    <!-- BÖLÜM 3 -->
+    <h3 style='font-family: Arial, sans-serif; color: #2d3748; font-size: 15px; font-weight: bold; margin-top: 25px; margin-bottom: 10px; border-left: 4px solid #1f4e78; padding-left: 10px;'>
+        3. Süreçlerde Tanımlı Olup Orchestrator'da Eksik Olan Queue ve Assetler
+    </h3>
+    <p style='font-size: 12px; color: #718096; margin-bottom: 10px;'>Süreç paketlerinde çağrılan ancak Orchestrator panelinde fiziksel olarak karşılığı bulunmayan asset ve queue isimleri.</p>
+    
+    <!-- Yanyana Tablolar (Asset ve Queue) -->
+    <table width='100%' style='border-collapse: collapse;'>
+        <tr>
+            <td width='48%' valign='top' style='font-family: Arial, sans-serif;'>
+                <table style='border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.04);'>
+                    <tr style='background-color: #1f4e78; color: #ffffff;'>
+                        <th style='padding: 12px 15px; border: 1px solid #e2e8f0; text-align: left; font-size: 13px; font-weight: bold; background-color: #1f4e78; color: #ffffff;'>Süreç Adı</th>
+                        <th style='padding: 12px 15px; border: 1px solid #e2e8f0; text-align: left; font-size: 13px; font-weight: bold; background-color: #1f4e78; color: #ffffff;'>Eksik Asset Adı</th>
+                    </tr>
+                    <tr style='background-color: #ffffff;'>
+                        <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>Fatura_Kontrol_Sureci</td>
+                        <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748; font-weight: bold; color: #c0392b;'>Mail_Gonderim_Adresi</td>
+                    </tr>
+                    <tr style='background-color: #f8fafc;'>
+                        <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>Mutabakat_Sureci</td>
+                        <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748; font-weight: bold; color: #c0392b;'>Dosya_Yolu_Asset</td>
+                    </tr>
+                </table>
+            </td>
+            <td width='4%'>&nbsp;</td>
+            <td width='48%' valign='top' style='font-family: Arial, sans-serif;'>
+                <table style='border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.04);'>
+                    <tr style='background-color: #1f4e78; color: #ffffff;'>
+                        <th style='padding: 12px 15px; border: 1px solid #e2e8f0; text-align: left; font-size: 13px; font-weight: bold; background-color: #1f4e78; color: #ffffff;'>Süreç Adı</th>
+                        <th style='padding: 12px 15px; border: 1px solid #e2e8f0; text-align: left; font-size: 13px; font-weight: bold; background-color: #1f4e78; color: #ffffff;'>Eksik Queue Adı</th>
+                    </tr>
+                    <tr style='background-color: #ffffff;'>
+                        <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>IK_Ise_Alim_Sureci</td>
+                        <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748; font-weight: bold; color: #c0392b;'>Aday_Listesi_Queue</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <br>
+
+    <!-- BÖLÜM 4 -->
+    <h3 style='font-family: Arial, sans-serif; color: #2d3748; font-size: 15px; font-weight: bold; margin-top: 25px; margin-bottom: 10px; border-left: 4px solid #1f4e78; padding-left: 10px;'>
+        4. Orchestrator'da bulunan ancak project.json içindeki adlarla uyuşmayan süreçler
+    </h3>
+    <table style='border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.04);'>
+        <tr style='background-color: #1f4e78; color: #ffffff;'>
+            <th style='padding: 12px 15px; border: 1px solid #e2e8f0; text-align: left; font-size: 13px; font-weight: bold; background-color: #1f4e78; color: #ffffff;'>Uyuşmayan Süreç Adı</th>
+        </tr>
+        <tr style='background-color: #ffffff;'>
+            <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>Eski_Isim_Surec_V1</td>
+        </tr>
+    </table>
+    <br>
+
+    <!-- BÖLÜM 5 -->
+    <div style='font-family: Arial, sans-serif;'>
+        <h3 style='font-family: Arial, sans-serif; color: #2d3748; font-size: 15px; font-weight: bold; margin-top: 25px; margin-bottom: 10px; border-left: 4px solid #1f4e78; padding-left: 10px;'>
+            5. Bu süreç adındaki json dosyası klasörlerde birden fazla bulunmakta
+        </h3>
+        <table style='border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.04);'>
+            <tr style='background-color: #1f4e78; color: #ffffff;'>
+                <th style='padding: 12px 15px; border: 1px solid #e2e8f0; text-align: left; font-size: 13px; font-weight: bold; background-color: #1f4e78; color: #ffffff;'>Tekrarlanan Süreç Adı</th>
+            </tr>
+            <tr style='background-color: #ffffff;'>
+                <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>Banka_Hareketleri_Kontrol_Sureci</td>
+            </tr>
+            <tr style='background-color: #f8fafc;'>
+                <td style='padding: 10px 15px; border: 1px solid #e2e8f0; font-size: 13px; color: #2d3748;'>Raporlama_Dispatcher</td>
+            </tr>
+        </table>
+        <p style='font-family: Arial, sans-serif; font-size: 11px; font-style: italic; color: #c0392b; margin-top: 5px;'>
+            *Yedek klasörü dahil edilmemiştir.
+        </p>
+    </div>
+
+    <!-- FOOTER -->
+    <br><hr style='border: 0; border-top: 1px solid #e2e8f0;'>
+    <p style='font-size: 11px; color: #a0aec0;'>
+        Bu operasyonel özet raporu RPA Robotu tarafından otomatik olarak üretilmiştir.
+    </p>
+
+</body>
+</html>
